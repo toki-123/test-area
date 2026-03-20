@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匠心手作 | 高定甜品定制</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置 Tailwind 主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D4A373',
+                        background: '#FAFAF5',
+                        secondary: '#F2E9E4',
+                        text: '#4A3F35',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', '"Noto Sans SC"', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAFAF5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4A373;
+            border-radius: 4px;
+        }
+        
+        /* 滚动淡入初始状态 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-background text-text font-sans antialiased selection:bg-primary selection:text-white">
+
+    <!-- 导航栏 -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="#" class="font-serif text-2xl font-bold tracking-wider text-text">L'Artisan</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#story" class="text-text hover:text-primary transition-colors duration-300">品牌故事</a>
+                <a href="#gallery" class="text-text hover:text-primary transition-colors duration-300">精选画廊</a>
+                <a href="#process" class="text-text hover:text-primary transition-colors duration-300">定制流程</a>
+            </div>
+            <a href="contact.html" class="hidden md:inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-[#c29162] transition-colors duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                联系我们
+            </a>
+            <!-- 移动端菜单按钮 -->
+            <button id="mobile-btn" class="md:hidden text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 移动端抽屉菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="mobile-overlay"></div>
+        <!-- 抽屉内容 -->
+        <div class="absolute top-0 right-0 w-64 h-full bg-background shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col py-20 px-6" id="mobile-drawer">
+            <button id="close-menu" class="absolute top-6 right-6 text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <a href="#story" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">品牌故事</a>
+            <a href="#gallery" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">精选画廊</a>
+            <a href="#process" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">定制流程</a>
+            <a href="contact.html" class="mt-8 bg-primary text-white text-center px-6 py-3 rounded-full hover:bg-[#c29162] transition-colors shadow-md">联系我们</a>
+        </div>
+    </div>
+
+    <!-- 首屏 (Hero Section) -->
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+        <!-- 背景图/渐变 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#F2E9E4]/50 to-[#FAFAF5] z-0"></div>
+        <img src="https://images.unsplash.com/photo-1559620192-032c4bc4674e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply z-0" />
+        
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto reveal active">
+            <span class="block font-sans text-primary tracking-[0.2em] uppercase text-sm mb-4">Handcrafted with Love</span>
+            <h1 class="font-serif text-5xl md:text-7xl font-bold mb-6 leading-tight text-text">
+                匠心手作，<br />定制你的甜蜜时刻
+            </h1>
+            <p class="font-sans text-lg md:text-xl text-text/80 mb-10 max-w-2xl mx-auto font-light">
+                每一份甜品都是独一无二的艺术品，选用顶级天然食材，为您定格生命中最美好的瞬间。
+            </p>
+            <a href="menu.html" class="inline-block bg-primary text-white font-medium px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-[#c29162] transition-all duration-300 transform hover:scale-105 animate-float">
+                立即预定
+            </a>
+        </div>
+    </header>
+
+    <!-- 品牌故事 (Brand Story) -->
+    <section id="story" class="py-24 bg-background">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="w-full md:w-1/2 reveal">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-secondary rounded-3xl transform translate-x-4 translate-y-4 -z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Making Cake" class="rounded-3xl shadow-lg w-full object-cover aspect-[4/5]" />
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 reveal">
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold mb-6 text-text">纯粹之源，<br />自然之味</h2>
+                    <div class="w-12 h-1 bg-primary mb-8 rounded-full"></div>
+                    <p class="text-text/80 leading-relaxed mb-6 font-light text-lg">
+                        我们相信，最好的味道源于最纯粹的自然。拒绝任何人工添加剂，我们走遍世界，只为寻找最优质的原材料。
+                    </p>
+                    <p class="text-text/80 leading-relaxed mb-8 font-light text-lg">
+                        从马达加斯加的香草荚，到比利时的顶级黑巧，再到本地农场清晨采摘的新鲜浆果。每一口，都是大自然最真挚的馈赠。
+                    </p>
+                    <a href="#gallery" class="text-primary font-medium hover:text-[#c29162] transition-colors inline-flex items-center group">
+                        了解更多关于我们的食材
+                        <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 精选画廊 (Featured Gallery) -->
+    <section id="gallery" class="py-24 bg-secondary/30">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="text-center mb-16 reveal">
+                <span class="font-sans text-primary tracking-[0.2em] uppercase text-sm block mb-2">Our Masterpieces</span>
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-text">精选画廊</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- 卡片 1 -->
+                <a href="cake-detail.html?id=1" class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group reveal block">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="经典红丝绒" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="bg-white/90 text-text px-6 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">查看详情</span>
+                        </div>
+                    </div>
+                    <div class="p-8 text-center">
+                        <h3 class="font-serif text-2xl font-bold mb-2 text-text">经典红丝绒</h3>
+                        <p class="text-text/60 font-light text-sm">丝滑奶油芝士 / 法国可可 / 覆盆子</p>
+                    </div>
+                </a>
+
+                <!-- 卡片 2 -->
+                <a href="cake-detail.html?id=2" class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group reveal delay-100 block">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="抹茶森林" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="bg-white/90 text-text px-6 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">查看详情</span>
+                        </div>
+                    </div>
+                    <div class="p-8 text-center">
+                        <h3 class="font-serif text-2xl font-bold mb-2 text-text">抹茶森林</h3>
+                        <p class="text-text/60 font-light text-sm">宇治抹茶 / 糖渍栗子 / 轻盈淡奶油</p>
+                    </div>
+                </a>
+
+                <!-- 卡片 3 -->
+                <a href="cake-detail.html?id=3" class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group reveal delay-200 block">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="芭乐阳光玫瑰" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="bg-white/90 text-text px-6 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">查看详情</span>
+                        </div>
+                    </div>
+                    <div class="p-8 text-center">
+                        <h3 class="font-serif text-2xl font-bold mb-2 text-text">芭乐阳光玫瑰</h3>
+                        <p class="text-text/60 font-light text-sm">芭乐 / 阳光玫瑰 / 青汁戚风</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="text-center mt-12 reveal">
+                <a href="menu.html" class="inline-block border border-primary text-primary px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-colors duration-300">
+                    浏览完整菜单
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 定制流程 (Customization Process) -->
+    <section id="process" class="py-24 bg-background">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="text-center mb-20 reveal">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-text mb-4">专属定制流程</h2>
+                <p class="text-text/70 font-light max-w-2xl mx-auto">每一个细节都由您做主，我们负责将您的想象化为甜蜜的现实。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+                <!-- 连接线 (仅桌面端显示) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-secondary -translate-y-1/2 z-0"></div>
+
+                <!-- 步骤 1 -->
+                <div class="relative z-10 text-center reveal">
+                    <div class="w-20 h-20 mx-auto bg-white rounded-full shadow-lg flex items-center justify-center mb-6 border-4 border-background text-primary">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold mb-2">1. 沟通需求</h3>
+                    <p class="text-text/60 text-sm font-light">倾听您的故事与喜好<br>确定主题与口味</p>
+                </div>
+
+                <!-- 步骤 2 -->
+                <div class="relative z-10 text-center reveal delay-100">
+                    <div class="w-20 h-20 mx-auto bg-white rounded-full shadow-lg flex items-center justify-center mb-6 border-4 border-background text-primary">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold mb-2">2. 手绘草图</h3>
+                    <p class="text-text/60 text-sm font-light">为您呈现专属设计稿<br>确认每一个细节</p>
+                </div>
+
+                <!-- 步骤 3 -->
+                <div class="relative z-10 text-center reveal delay-200">
+                    <div class="w-20 h-20 mx-auto bg-white rounded-full shadow-lg flex items-center justify-center mb-6 border-4 border-background text-primary">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold mb-2">3. 纯手工制作</h3>
+                    <p class="text-text/60 text-sm font-light">精选顶级天然食材<br>匠心雕琢每一寸甜蜜</p>
+                </div>
+
+                <!-- 步骤 4 -->
+                <div class="relative z-10 text-center reveal delay-300">
+                    <div class="w-20 h-20 mx-auto bg-primary text-white rounded-full shadow-lg flex items-center justify-center mb-6 border-4 border-background">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold mb-2">4. 甜蜜送达</h3>
+                    <p class="text-text/60 text-sm font-light">专人冷链配送上门<br>完美呈现于您的庆典</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-[#4A3F35] text-[#F2E9E4] py-16">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+                <h4 class="font-serif text-2xl font-bold mb-6">L'Artisan</h4>
+                <p class="font-light text-sm text-[#F2E9E4]/70 leading-relaxed">
+                    用匠心定格甜蜜，以自然之味抚慰人心。<br>
+                    每一款甜品，都是我们写给生活的情书。
+                </p>
+            </div>
+            <div>
+                <h4 class="font-serif text-lg font-bold mb-6">联系我们</h4>
+                <ul class="font-light text-sm text-[#F2E9E4]/70 space-y-3">
+                    <li>地址：巴黎左岸艺术街区 128 号</li>
+                    <li>电话：+86 400-123-4567</li>
+                    <li>邮箱：hello@lartisan-cake.com</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif text-lg font-bold mb-6">关注我们</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-[#F2E9E4]/10 flex items-center justify-center hover:bg-primary transition-colors">
+                        <span class="sr-only">WeChat</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 13.5c-3.5 0-6.5-2.5-6.5-5.5s3-5.5 6.5-5.5 6.5 2.5 6.5 5.5-3 5.5-6.5 5.5zm0-9.5c-2.5 0-4.5 1.5-4.5 3.5s2 3.5 4.5 3.5 4.5-1.5 4.5-3.5-2-3.5-4.5-3.5zm7.5 11c-2.5 0-4.5-1.5-4.5-3.5s2-3.5 4.5-3.5 4.5 1.5 4.5 3.5-2 3.5-4.5 3.5zm0-5.5c-1.5 0-2.5 1-2.5 2s1 2 2.5 2 2.5-1 2.5-2-1-2-2.5-2z"/></svg>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-[#F2E9E4]/10 flex items-center justify-center hover:bg-primary transition-colors">
+                        <span class="sr-only">Instagram</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 md:px-12 mt-12 pt-8 border-t border-[#F2E9E4]/10 text-center text-sm font-light text-[#F2E9E4]/50">
+            &copy; 2026 L'Artisan Cake. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- 交互脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-white/80', 'backdrop-blur-md', 'shadow-sm');
+                    navbar.classList.remove('py-4');
+                    navbar.classList.add('py-3');
+                } else {
+                    navbar.classList.remove('bg-white/80', 'backdrop-blur-md', 'shadow-sm');
+                    navbar.classList.remove('py-3');
+                    navbar.classList.add('py-4');
+                }
+            });
+
+            // 滚动淡入效果 (Scroll Reveal)
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            // 初始触发一次
+            revealOnScroll();
+
+            // 移动端抽屉菜单逻辑
+            const mobileBtn = document.getElementById('mobile-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const mobileDrawer = document.getElementById('mobile-drawer');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            function openMenu() {
+                mobileMenu.classList.remove('hidden');
+                // 触发重绘
+                void mobileMenu.offsetWidth;
+                mobileOverlay.classList.remove('opacity-0');
+                mobileOverlay.classList.add('opacity-100');
+                mobileDrawer.classList.remove('translate-x-full');
+                mobileDrawer.classList.add('translate-x-0');
+            }
+
+            function closeMenu() {
+                mobileOverlay.classList.remove('opacity-100');
+                mobileOverlay.classList.add('opacity-0');
+                mobileDrawer.classList.remove('translate-x-0');
+                mobileDrawer.classList.add('translate-x-full');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+            }
+
+            mobileBtn?.addEventListener('click', openMenu);
+            closeMenuBtn?.addEventListener('click', closeMenu);
+            mobileOverlay?.addEventListener('click', closeMenu);
+            
+            // 点击链接后自动关闭抽屉
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系我们 | 匠心手作</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置 Tailwind 主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D4A373',
+                        background: '#FAFAF5',
+                        secondary: '#F2E9E4',
+                        text: '#4A3F35',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', '"Noto Sans SC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text font-sans antialiased selection:bg-primary selection:text-white flex flex-col min-h-screen">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md shadow-sm py-3">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="index.html" class="font-serif text-2xl font-bold tracking-wider text-text">L'Artisan</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#story" class="text-text hover:text-primary transition-colors duration-300">品牌故事</a>
+                <a href="index.html#gallery" class="text-text hover:text-primary transition-colors duration-300">精选画廊</a>
+                <a href="index.html#process" class="text-text hover:text-primary transition-colors duration-300">定制流程</a>
+            </div>
+            <a href="contact.html" class="hidden md:inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-[#c29162] transition-colors duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                联系我们
+            </a>
+            <!-- 移动端菜单按钮 -->
+            <button id="mobile-btn" class="md:hidden text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 移动端抽屉菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="mobile-overlay"></div>
+        <!-- 抽屉内容 -->
+        <div class="absolute top-0 right-0 w-64 h-full bg-background shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col py-20 px-6" id="mobile-drawer">
+            <button id="close-menu" class="absolute top-6 right-6 text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <a href="index.html#story" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">品牌故事</a>
+            <a href="index.html#gallery" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">精选画廊</a>
+            <a href="index.html#process" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">定制流程</a>
+            <a href="contact.html" class="mt-8 bg-primary text-white text-center px-6 py-3 rounded-full hover:bg-[#c29162] transition-colors shadow-md">联系我们</a>
+        </div>
+    </div>
+
+    <!-- 联系表单区 -->
+    <main class="flex-grow pt-32 pb-24 flex items-center justify-center">
+        <div class="max-w-xl w-full mx-auto px-6">
+            <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 relative overflow-hidden">
+                <!-- 装饰元素 -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-secondary rounded-bl-full -z-10 opacity-50"></div>
+                
+                <div class="text-center mb-10">
+                    <h1 class="font-serif text-3xl md:text-4xl font-bold text-text mb-4">联系我们</h1>
+                    <p class="text-text/70 font-light text-sm md:text-base">
+                        请留下您的联系方式，我们的甜品顾问将尽快与您联系，为您开启专属的甜蜜定制之旅。
+                    </p>
+                </div>
+
+                <form id="contact-form" onsubmit="submitContact(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-text/80 mb-2">您的称呼</label>
+                        <input type="text" required class="w-full px-5 py-3.5 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" placeholder="如：林女士">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text/80 mb-2">联系电话</label>
+                        <input type="tel" required class="w-full px-5 py-3.5 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" placeholder="您的手机号码">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text/80 mb-2">需求简述 (选填)</label>
+                        <textarea rows="3" class="w-full px-5 py-3.5 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none" placeholder="例如：想定制一款生日蛋糕，喜欢水果口味..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-primary text-white font-medium px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#c29162] transition-all duration-300 transform hover:-translate-y-0.5 mt-4">
+                        提交信息
+                    </button>
+                </form>
+
+                <!-- 成功提示 (默认隐藏) -->
+                <div id="success-message" class="hidden flex-col items-center justify-center text-center py-8">
+                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold text-text mb-2">提交成功</h3>
+                    <p class="text-text/70 font-light">感谢您的信任，我们将尽快与您联系。</p>
+                    <a href="index.html" class="mt-8 text-primary hover:text-[#c29162] font-medium transition-colors">
+                        返回首页
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#4A3F35] text-[#F2E9E4] py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 text-center text-sm font-light text-[#F2E9E4]/50">
+            &copy; 2026 L'Artisan Cake. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- 交互脚本 -->
+    <script>
+        function submitContact(e) {
+            e.preventDefault();
+            const form = document.getElementById('contact-form');
+            const successMsg = document.getElementById('success-message');
+            const btn = e.target.querySelector('button[type="submit"]');
+            
+            btn.textContent = '提交中...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            // 模拟提交
+            setTimeout(() => {
+                form.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+                successMsg.classList.add('flex');
+            }, 1000);
+        }
+
+        // 移动端抽屉菜单逻辑
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const closeMenuBtn = document.getElementById('close-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function openMenu() {
+            mobileMenu.classList.remove('hidden');
+            void mobileMenu.offsetWidth;
+            mobileOverlay.classList.remove('opacity-0');
+            mobileOverlay.classList.add('opacity-100');
+            mobileDrawer.classList.remove('translate-x-full');
+            mobileDrawer.classList.add('translate-x-0');
+        }
+
+        function closeMenu() {
+            mobileOverlay.classList.remove('opacity-100');
+            mobileOverlay.classList.add('opacity-0');
+            mobileDrawer.classList.remove('translate-x-0');
+            mobileDrawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
+        }
+
+        mobileBtn?.addEventListener('click', openMenu);
+        closeMenuBtn?.addEventListener('click', closeMenu);
+        mobileOverlay?.addEventListener('click', closeMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    </script>
+</body>
+</html>

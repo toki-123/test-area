@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完整菜单 | 匠心手作</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置 Tailwind 主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D4A373',
+                        background: '#FAFAF5',
+                        secondary: '#F2E9E4',
+                        text: '#4A3F35',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', '"Noto Sans SC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text font-sans antialiased selection:bg-primary selection:text-white flex flex-col min-h-screen">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md shadow-sm py-3">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="index.html" class="font-serif text-2xl font-bold tracking-wider text-text">L'Artisan</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#story" class="text-text hover:text-primary transition-colors duration-300">品牌故事</a>
+                <a href="index.html#gallery" class="text-text hover:text-primary transition-colors duration-300">精选画廊</a>
+                <a href="index.html#process" class="text-text hover:text-primary transition-colors duration-300">定制流程</a>
+            </div>
+            <a href="contact.html" class="hidden md:inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-[#c29162] transition-colors duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                联系我们
+            </a>
+            <!-- 移动端菜单按钮 -->
+            <button id="mobile-btn" class="md:hidden text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 移动端抽屉菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="mobile-overlay"></div>
+        <!-- 抽屉内容 -->
+        <div class="absolute top-0 right-0 w-64 h-full bg-background shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col py-20 px-6" id="mobile-drawer">
+            <button id="close-menu" class="absolute top-6 right-6 text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <a href="index.html#story" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">品牌故事</a>
+            <a href="index.html#gallery" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">精选画廊</a>
+            <a href="index.html#process" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">定制流程</a>
+            <a href="contact.html" class="mt-8 bg-primary text-white text-center px-6 py-3 rounded-full hover:bg-[#c29162] transition-colors shadow-md">联系我们</a>
+        </div>
+    </div>
+
+    <!-- 菜单列表区 -->
+    <main class="flex-grow pt-32 pb-24">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h1 class="font-serif text-4xl md:text-5xl font-bold text-text mb-4">完整菜单</h1>
+                <p class="text-text/70 font-light max-w-2xl mx-auto">
+                    挑选您心仪的甜品，开启专属的甜蜜定制之旅。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" id="menu-grid">
+                <!-- 动态注入蛋糕列表 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#4A3F35] text-[#F2E9E4] py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 text-center text-sm font-light text-[#F2E9E4]/50">
+            &copy; 2026 L'Artisan Cake. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- 预定弹窗 (Modal) -->
+    <div id="booking-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeBookingModal()"></div>
+        
+        <!-- 弹窗内容 -->
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 p-8 transform transition-all scale-95 opacity-0" id="modal-content">
+            <button onclick="closeBookingModal()" class="absolute top-6 right-6 text-text/50 hover:text-text transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <h2 class="font-serif text-2xl font-bold mb-2 text-text">提交预定意向</h2>
+            <p class="text-text/60 text-sm font-light mb-6">您正在预定：<strong id="booking-cake-name" class="text-primary"></strong></p>
+            
+            <form onsubmit="submitBooking(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-text/80 mb-1">您的称呼</label>
+                    <input type="text" required class="w-full px-4 py-3 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" placeholder="如：林女士">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text/80 mb-1">联系电话</label>
+                    <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" placeholder="您的手机号码">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text/80 mb-1">预计取餐日期</label>
+                    <input type="date" required class="w-full px-4 py-3 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-text/80">
+                </div>
+                <button type="submit" class="w-full bg-primary text-white font-medium px-6 py-3.5 rounded-xl shadow-md hover:bg-[#c29162] transition-colors mt-4">
+                    确认提交
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 交互脚本 -->
+    <script>
+        // 蛋糕数据
+        const cakeData = [
+            {
+                id: '1',
+                name: '经典红丝绒',
+                desc: '丝滑奶油芝士 / 法国可可 / 覆盆子',
+                price: '¥ 298',
+                image: 'https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: '2',
+                name: '抹茶森林',
+                desc: '宇治抹茶 / 糖渍栗子 / 轻盈淡奶油',
+                price: '¥ 328',
+                image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: '3',
+                name: '芭乐阳光玫瑰',
+                desc: '芭乐 / 阳光玫瑰 / 青汁戚风',
+                price: '¥ 358',
+                image: 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: '4',
+                name: '海盐焦糖伯爵',
+                desc: '伯爵红茶 / 海盐焦糖 / 榛子脆脆',
+                price: '¥ 318',
+                image: 'https://images.unsplash.com/photo-1542826438-bd32f43d626f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: '5',
+                name: '黑森林奇遇',
+                desc: '法芙娜黑巧 / 酒渍樱桃 / 香草奶油',
+                price: '¥ 348',
+                image: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: '6',
+                name: '茉莉青提',
+                desc: '茉莉花茶 / 阳光青提 / 奶冻夹心',
+                price: '¥ 338',
+                image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('menu-grid');
+            
+            cakeData.forEach(cake => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group flex flex-col';
+                
+                card.innerHTML = `
+                    <a href="cake-detail.html?id=${cake.id}" class="relative overflow-hidden aspect-square block">
+                        <img src="${cake.image}" alt="${cake.name}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="bg-white/90 text-text px-6 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">查看详情</span>
+                        </div>
+                    </a>
+                    <div class="p-8 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-2xl font-bold mb-2 text-text">${cake.name}</h3>
+                            <p class="text-text/60 font-light text-sm mb-4">${cake.desc}</p>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-secondary">
+                            <span class="font-serif text-xl font-bold text-primary">${cake.price}</span>
+                            <button onclick="openBookingModal('${cake.name}')" class="bg-primary text-white px-5 py-2 rounded-full text-sm hover:bg-[#c29162] transition-colors shadow-sm">
+                                立即预定
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+
+        // 弹窗逻辑
+        const modal = document.getElementById('booking-modal');
+        const modalContent = document.getElementById('modal-content');
+        const bookingCakeName = document.getElementById('booking-cake-name');
+
+        function openBookingModal(cakeName) {
+            bookingCakeName.textContent = cakeName;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeBookingModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function submitBooking(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '提交中...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            // 模拟提交
+            setTimeout(() => {
+                btn.textContent = '提交成功！顾问将尽快联系您';
+                btn.classList.remove('bg-primary', 'hover:bg-[#c29162]');
+                btn.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    closeBookingModal();
+                    // 恢复按钮状态
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed', 'bg-green-600');
+                        btn.classList.add('bg-primary', 'hover:bg-[#c29162]');
+                        e.target.reset();
+                    }, 300);
+                }, 2000);
+            }, 1500);
+        }
+
+        // 移动端抽屉菜单逻辑
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const closeMenuBtn = document.getElementById('close-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function openMenu() {
+            mobileMenu.classList.remove('hidden');
+            void mobileMenu.offsetWidth;
+            mobileOverlay.classList.remove('opacity-0');
+            mobileOverlay.classList.add('opacity-100');
+            mobileDrawer.classList.remove('translate-x-full');
+            mobileDrawer.classList.add('translate-x-0');
+        }
+
+        function closeMenu() {
+            mobileOverlay.classList.remove('opacity-100');
+            mobileOverlay.classList.add('opacity-0');
+            mobileDrawer.classList.remove('translate-x-0');
+            mobileDrawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
+        }
+
+        mobileBtn?.addEventListener('click', openMenu);
+        closeMenuBtn?.addEventListener('click', closeMenu);
+        mobileOverlay?.addEventListener('click', closeMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    </script>
+</body>
+</html>

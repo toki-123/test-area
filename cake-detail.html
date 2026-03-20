@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>甜品详情 | 匠心手作</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置 Tailwind 主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D4A373',
+                        background: '#FAFAF5',
+                        secondary: '#F2E9E4',
+                        text: '#4A3F35',
+                        detailBg: '#E8E3E0', // 参考图的背景色
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Lato"', '"Noto Sans SC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAFAF5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4A373;
+            border-radius: 4px;
+        }
+        
+        /* 连线动画 */
+        .layer-line {
+            transform-origin: left;
+            animation: drawLine 1s ease-out forwards;
+        }
+        @keyframes drawLine {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        .layer-dot {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 1s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-background text-text font-sans antialiased selection:bg-primary selection:text-white">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md shadow-sm py-3">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+            <a href="index.html" class="font-serif text-2xl font-bold tracking-wider text-text">L'Artisan</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#story" class="text-text hover:text-primary transition-colors duration-300">品牌故事</a>
+                <a href="index.html#gallery" class="text-text hover:text-primary transition-colors duration-300">精选画廊</a>
+                <a href="index.html#process" class="text-text hover:text-primary transition-colors duration-300">定制流程</a>
+            </div>
+            <a href="contact.html" class="hidden md:inline-block bg-primary text-white px-6 py-2 rounded-full hover:bg-[#c29162] transition-colors duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                联系我们
+            </a>
+            <!-- 移动端菜单按钮 -->
+            <button id="mobile-btn" class="md:hidden text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 移动端抽屉菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="mobile-overlay"></div>
+        <!-- 抽屉内容 -->
+        <div class="absolute top-0 right-0 w-64 h-full bg-background shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col py-20 px-6" id="mobile-drawer">
+            <button id="close-menu" class="absolute top-6 right-6 text-text focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <a href="index.html#story" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">品牌故事</a>
+            <a href="index.html#gallery" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">精选画廊</a>
+            <a href="index.html#process" class="mobile-link text-xl font-serif text-text hover:text-primary py-4 border-b border-secondary">定制流程</a>
+            <a href="contact.html" class="mt-8 bg-primary text-white text-center px-6 py-3 rounded-full hover:bg-[#c29162] transition-colors shadow-md">联系我们</a>
+        </div>
+    </div>
+
+    <!-- 详情内容区 -->
+    <main class="pt-24 pb-16 min-h-screen flex items-center bg-detailBg">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 w-full">
+            <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                
+                <!-- 左侧：蛋糕剖面与图解 -->
+                <div class="w-full lg:w-1/2 flex justify-center lg:justify-end relative">
+                    <!-- 蛋糕图片容器 -->
+                    <div class="relative inline-block mt-10 lg:mt-0">
+                        <img id="cake-image" src="" alt="Cake Detail" class="w-[300px] md:w-[400px] rounded-2xl shadow-2xl object-cover aspect-[4/5]" />
+                        
+                        <!-- 图解层 (由 JS 动态生成) -->
+                        <div id="layers-container" class="absolute inset-0 pointer-events-none">
+                            <!-- JS 注入内容 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：蛋糕信息与预定 -->
+                <div class="w-full lg:w-1/2">
+                    <a href="menu.html" class="inline-flex items-center text-text/60 hover:text-primary transition-colors mb-8 text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        返回菜单
+                    </a>
+                    
+                    <h1 id="cake-name" class="font-serif text-4xl md:text-5xl font-bold mb-4 text-text">加载中...</h1>
+                    <p id="cake-desc" class="text-text/70 text-lg font-light mb-8">...</p>
+                    
+                    <div class="bg-white/50 backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-sm">
+                        <h3 class="font-serif text-xl font-bold mb-4">口味档案</h3>
+                        <ul id="cake-taste" class="space-y-2 text-text/80 font-light text-sm">
+                            <!-- JS 注入 -->
+                        </ul>
+                    </div>
+                    
+                    <div class="flex items-end gap-6 mb-10">
+                        <div>
+                            <span class="block text-text/50 text-sm mb-1">定制价格</span>
+                            <span id="cake-price" class="font-serif text-3xl font-bold text-primary">¥ --</span>
+                        </div>
+                        <span class="text-text/50 text-sm mb-1.5">/ 6英寸起</span>
+                    </div>
+                    
+                    <button onclick="openBookingModal()" class="w-full md:w-auto bg-primary text-white font-medium px-12 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-[#c29162] transition-all duration-300 transform hover:-translate-y-1">
+                        立即预定
+                    </button>
+                    
+                    <p id="cake-note" class="mt-6 text-text/50 text-xs font-light italic"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 预定弹窗 (Modal) -->
+    <div id="booking-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeBookingModal()"></div>
+        
+        <!-- 弹窗内容 -->
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 p-8 transform transition-all scale-95 opacity-0" id="modal-content">
+            <button onclick="closeBookingModal()" class="absolute top-6 right-6 text-text/50 hover:text-text transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <h2 class="font-serif text-2xl font-bold mb-2 text-text">提交预定意向</h2>
+            <p class="text-text/60 text-sm font-light mb-6">请留下您的联系方式，我们的甜品顾问将尽快与您联系确认定制细节。</p>
+            
+            <form onsubmit="submitBooking(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-text/80 mb-1">您的称呼</label>
+                    <input type="text" required class="w-full px-4 py-3 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" placeholder="如：林女士">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text/80 mb-1">联系电话</label>
+                    <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" placeholder="您的手机号码">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text/80 mb-1">预计取餐日期</label>
+                    <input type="date" required class="w-full px-4 py-3 rounded-xl border border-secondary bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-text/80">
+                </div>
+                <button type="submit" class="w-full bg-primary text-white font-medium px-6 py-3.5 rounded-xl shadow-md hover:bg-[#c29162] transition-colors mt-4">
+                    确认提交
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 数据与逻辑脚本 -->
+    <script>
+        // 蛋糕数据
+        const cakeData = {
+            '1': {
+                name: '经典红丝绒',
+                desc: '丝滑奶油芝士 / 法国可可 / 覆盆子',
+                price: '¥ 298',
+                image: 'https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                tastes: ['甜度：★★★☆☆', '口感：绵密、醇厚', '适合场景：纪念日、生日'],
+                layers: [
+                    { name: '新鲜覆盆子', top: '15%' },
+                    { name: '丝滑奶油芝士', top: '35%' },
+                    { name: '法国可可红丝绒胚', top: '55%' },
+                    { name: '覆盆子果茸夹心', top: '75%' }
+                ],
+                note: '*产品内含微量朗姆酒'
+            },
+            '2': {
+                name: '抹茶森林',
+                desc: '宇治抹茶 / 糖渍栗子 / 轻盈淡奶油',
+                price: '¥ 328',
+                image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                tastes: ['甜度：★★☆☆☆', '口感：清新、微苦回甘', '适合场景：下午茶、长辈生日'],
+                layers: [
+                    { name: '宇治抹茶粉', top: '20%' },
+                    { name: '轻盈淡奶油', top: '40%' },
+                    { name: '糖渍栗子碎', top: '60%' },
+                    { name: '抹茶戚风蛋糕胚', top: '80%' }
+                ],
+                note: '*产品内含坚果'
+            },
+            '3': {
+                name: '芭乐阳光玫瑰',
+                desc: '芭乐 / 阳光玫瑰 / 青汁戚风',
+                price: '¥ 358',
+                image: 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                tastes: ['甜度：★★☆☆☆', '口感：果香浓郁、清爽多汁', '适合场景：夏日派对、闺蜜聚会'],
+                layers: [
+                    { name: '芭乐', top: '10%' },
+                    { name: '阳光玫瑰', top: '22%' },
+                    { name: '芒果奶油', top: '34%' },
+                    { name: '鲜奶奶油', top: '46%' },
+                    { name: '芭乐奶油', top: '58%' },
+                    { name: '混合芭乐夹心', top: '70%' },
+                    { name: '青汁戚风蛋糕', top: '82%' },
+                    { name: '黄金柳芽', top: '94%' }
+                ],
+                note: '*产品内含巧克力棒'
+            },
+            '4': {
+                name: '海盐焦糖伯爵',
+                desc: '伯爵红茶 / 海盐焦糖 / 榛子脆脆',
+                price: '¥ 318',
+                image: 'https://images.unsplash.com/photo-1542826438-bd32f43d626f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                tastes: ['甜度：★★★☆☆', '口感：茶香浓郁、咸甜交织', '适合场景：下午茶、朋友聚会'],
+                layers: [
+                    { name: '海盐焦糖酱', top: '15%' },
+                    { name: '伯爵红茶奶油', top: '35%' },
+                    { name: '榛子巧克力脆脆', top: '55%' },
+                    { name: '红茶戚风蛋糕胚', top: '75%' }
+                ],
+                note: '*产品内含坚果与微量咖啡因'
+            },
+            '5': {
+                name: '黑森林奇遇',
+                desc: '法芙娜黑巧 / 酒渍樱桃 / 香草奶油',
+                price: '¥ 348',
+                image: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                tastes: ['甜度：★★☆☆☆', '口感：醇厚微醺、层次丰富', '适合场景：生日庆典、晚宴'],
+                layers: [
+                    { name: '法芙娜黑巧碎', top: '15%' },
+                    { name: '马达加斯加香草奶油', top: '35%' },
+                    { name: '樱桃酒渍果肉', top: '55%' },
+                    { name: '浓郁巧克力蛋糕胚', top: '75%' }
+                ],
+                note: '*产品内含酒精，孕妇及儿童不宜食用'
+            },
+            '6': {
+                name: '茉莉青提',
+                desc: '茉莉花茶 / 阳光青提 / 奶冻夹心',
+                price: '¥ 338',
+                image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                tastes: ['甜度：★☆☆☆☆', '口感：清雅幽香、Q弹爽滑', '适合场景：日常分享、长辈寿辰'],
+                layers: [
+                    { name: '阳光青提果肉', top: '15%' },
+                    { name: '茉莉花茶轻奶油', top: '35%' },
+                    { name: '茉莉奶冻夹心', top: '55%' },
+                    { name: '原味云朵戚风', top: '75%' }
+                ],
+                note: '*建议冷藏后食用口感最佳'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 获取 URL 参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const cakeId = urlParams.get('id') || '3'; // 默认显示第3个
+            const data = cakeData[cakeId];
+
+            if (data) {
+                // 填充基本信息
+                document.getElementById('cake-name').textContent = data.name;
+                document.getElementById('cake-desc').textContent = data.desc;
+                document.getElementById('cake-price').textContent = data.price;
+                document.getElementById('cake-image').src = data.image;
+                document.getElementById('cake-note').textContent = data.note;
+
+                // 填充口味档案
+                const tasteContainer = document.getElementById('cake-taste');
+                data.tastes.forEach(taste => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center';
+                    li.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-primary mr-2"></span>${taste}`;
+                    tasteContainer.appendChild(li);
+                });
+
+                // 生成图解层 (连线和文字)
+                const layersContainer = document.getElementById('layers-container');
+                data.layers.forEach((layer, index) => {
+                    const delay = index * 0.15; // 错开动画时间
+                    
+                    const layerDiv = document.createElement('div');
+                    layerDiv.className = 'absolute flex items-center w-full max-w-[200px] md:max-w-[250px]';
+                    // 定位到图片左侧外部，并垂直分布
+                    layerDiv.style.top = layer.top;
+                    layerDiv.style.right = '100%';
+                    layerDiv.style.transform = 'translateY(-50%)';
+
+                    layerDiv.innerHTML = `
+                        <span class="whitespace-nowrap mr-3 text-text font-medium text-sm md:text-base opacity-0" style="animation: fadeIn 0.5s ease-out ${delay}s forwards;">${layer.name}</span>
+                        <div class="flex-grow h-px bg-text/40 layer-line" style="animation-delay: ${delay}s;"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-text/80 layer-dot shrink-0" style="animation-delay: ${delay}s;"></div>
+                    `;
+                    layersContainer.appendChild(layerDiv);
+                });
+            }
+        });
+
+        // 弹窗逻辑
+        const modal = document.getElementById('booking-modal');
+        const modalContent = document.getElementById('modal-content');
+
+        function openBookingModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // 触发动画
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeBookingModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function submitBooking(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '提交中...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            // 模拟提交
+            setTimeout(() => {
+                btn.textContent = '提交成功！顾问将尽快联系您';
+                btn.classList.remove('bg-primary', 'hover:bg-[#c29162]');
+                btn.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    closeBookingModal();
+                    // 恢复按钮状态
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed', 'bg-green-600');
+                        btn.classList.add('bg-primary', 'hover:bg-[#c29162]');
+                        e.target.reset();
+                    }, 300);
+                }, 2000);
+            }, 1500);
+        }
+
+        // 移动端抽屉菜单逻辑
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const closeMenuBtn = document.getElementById('close-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function openMenu() {
+            mobileMenu.classList.remove('hidden');
+            // 触发重绘
+            void mobileMenu.offsetWidth;
+            mobileOverlay.classList.remove('opacity-0');
+            mobileOverlay.classList.add('opacity-100');
+            mobileDrawer.classList.remove('translate-x-full');
+            mobileDrawer.classList.add('translate-x-0');
+        }
+
+        function closeMenu() {
+            mobileOverlay.classList.remove('opacity-100');
+            mobileOverlay.classList.add('opacity-0');
+            mobileDrawer.classList.remove('translate-x-0');
+            mobileDrawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
+        }
+
+        mobileBtn?.addEventListener('click', openMenu);
+        closeMenuBtn?.addEventListener('click', closeMenu);
+        mobileOverlay?.addEventListener('click', closeMenu);
+        
+        // 点击链接后自动关闭抽屉
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    </script>
+</body>
+</html>
